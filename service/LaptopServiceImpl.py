@@ -35,12 +35,12 @@ class  LaptopService(KnowledgeEngine):
     @Rule(Laptop(cpuModel="core i7"))
     def cpu_model_3(self):
         self.compational_power_point = self.compational_power_point + 7
-        print(self.compational_power_point)
+        #print(self.compational_power_point)
 
     @Rule(Laptop(cpuModel="core i9"))
     def cpu_model_4(self):
         self.compational_power_point = self.compational_power_point + 10
-        print(self.compational_power_point)
+        #print(self.compational_power_point)
 
 
     #
@@ -54,7 +54,7 @@ class  LaptopService(KnowledgeEngine):
     @Rule(Laptop(cpuCoresSize="4"))
     def cpu_core_2(self):
         self.compational_power_point = self.compational_power_point + 2
-        print(self.compational_power_point)
+        #print(self.compational_power_point)
 
     @Rule(Laptop(cpuCoresSize="6"))
     def cpu_core_3(self):
@@ -176,3 +176,5 @@ class  LaptopService(KnowledgeEngine):
     @Rule(Laptop(batteryType="Li-Ion"))
     def battery_type_1(self):
         self.compational_power_point = self.compational_power_point + 3
+
+    print(compational_power_point);

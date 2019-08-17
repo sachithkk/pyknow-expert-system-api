@@ -18,9 +18,9 @@ class LaptopController(Resource):
     def post(self):
 
         logger.info("Starting laptop compaire method....")
-        requestData = request.get_json();
+        requestData = request.get_json()
 
-        cpuModel = requestData['cpuModel'];
+        cpuModel = requestData['cpuModel']
         cpuCoresSize = requestData['cpuCoresSize']
         cpuCachSize = requestData['cpuCachSize']
         cpuBoostSpeed = requestData['cpuBoostSpeed']
