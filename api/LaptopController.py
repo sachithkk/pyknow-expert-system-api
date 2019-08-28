@@ -33,7 +33,8 @@ class LaptopController(Resource):
         gpuMemorySize = requestData['gpuMemorySize']
         gpuBooStSpeed = requestData['gpuBooStSpeed']
 
-        print("****" + cpuModel)
+        print("****" + requestData['ramType'])
+        print("****" + requestData['ramSize'])
 
         laptopservice = LaptopService()
 
@@ -49,7 +50,7 @@ class LaptopController(Resource):
                                      batteryType=requestData['batteryType']))
 
         laptopservice.run()
+        r = laptopservice.result();
+        print(r);
 
-        result = self.mongo.db.laptops.find_one({"lapName": "Apple MacBook Pro 13 (2018)"})
-        print(result)
-        return jsonify({"message": "Message"})
+        return jsonify({"point": r})
