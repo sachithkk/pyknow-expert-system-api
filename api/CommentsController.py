@@ -3,9 +3,15 @@ from flask import jsonify, request
 import logging as logger
 from app import flaskAppInstance
 from flask_pymongo import PyMongo
-
-import re, sys , pymongo, time, requests, os.path, csv
-from selenium import webdriver
+import tweepy
+import logging
+from bson import json_util, ObjectId
+import re, sys, pymongo, time, requests, json
+import nltk
+import pandas as pd
+import warnings
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from .Youtube_videos import youtube_search
 
 
 class CommentsController(Resource):
@@ -15,132 +21,74 @@ class CommentsController(Resource):
 
         requestData = request.get_json()
 
-        # get relative path
-        my_path = os.path.abspath(os.path.dirname(__file__))
-        chrome_path = os.path.join(my_path, "..\chromeDriver\chromedriver.exe")
+        results = []
 
-        # without headless mode
-        driver = webdriver.Chrome(chrome_path)
+        def extract_twiitter():
 
-        # run hedless mode
-        # chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument("--headless")
+            consumer_key = "JjOaEAXjUq8b8PVqS1UFQpmur"
+            consumer_secret = "Frj1dDqF0nePQr0LYoy2cGhE8s5rmwEgFtkzYWWbJi4f5DBIMA"
+            access_token = "1540106498-PQZwiwzWowjjspOIErpc96hAuFKoUj8Pb2TBpLO"
+            access_token_secret = "b2viTdZr279qwfAp6LyH6kg4gfU0q7PCzXZpjIJGz2vVX"
 
-        # driver = webdriver.Chrome(chrome_path, options=chrome_options)
+            # Creating the authentication object
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            # Setting your access token and secret
+            auth.set_access_token(access_token, access_token_secret)
+            # Creating the API object while passing in auth information
+            api = tweepy.API(auth)
 
-        # # hide browser
-        # driver.set_window_position(-10000,0)
+            # The search term you want to find
+            query = requestData["name"]
+            # Language code (follows ISO 639-1 standards)
+            language = "en"
 
-        # get steam site
-        driver.get("https://www.youtube.com/")
-        driver.maximize_window()
+            non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+            try:
+                for tweet in tweepy.Cursor(api.search, q=query, count=100, lang="en").items():
+                    if "laptop" not in tweet.text:
+                        results.append(tweet.text.translate(non_bmp_map))
+                        tweet_id = tweet.id
+                        user = tweet.user.screen_name
+                        for reply in tweepy.Cursor(api.search, q='to:{}'.format(user), since_id=tweet_id, result_type='recent').items(1000):
+                            if hasattr(reply, 'in_reply_to_status_id_str'):
+                                if reply.in_reply_to_status_id_str == tweet.id_str:
+                                    results.append(reply.text.translate(non_bmp_map))
+            except:
+                print("error1")
 
-        # get game name by command-line argument
-        # search_tag = sys.argv[1]
+        video_dict = {'youID': [], 'title': [], 'pub_date': []}
 
-        search_tag = requestData["product_name"]
+        def grab_videos(keyword, token=None):
+            res = youtube_search(keyword, token=token)
+            token = res[0]
+            videos = res[1]
+            for vid in videos:
+                try:
+                    video_dict['youID'].append(vid['id']['videoId'])
+                    video_dict['title'].append(vid['snippet']['title'])
+                    # comment = vid['snippet']['topLevelComment']['snippet']['textDisplay']
+                    # results.append(comment)
+                except:
+                    print("error2")
+            return token
 
-        # search the video
-        search_video = driver.find_element_by_name("search_query")
-        search_video.send_keys(search_tag)
-        search_video.submit()
+        def extract_youtube():
+            token = grab_videos(requestData["name"])
+            while token != "last_page":
+                token = grab_videos(requestData["name"], token=token)
 
-        # #  click filters
-        # driver.find_element_by_xpath("""//*[@id="container"]/ytd-toggle-button-renderer""").click()
+        # extract_twiitter()
+        # extract_youtube()
 
-        driver.find_element_by_xpath("""//*[@id="thumbnail"]/yt-img-shadow""").click()
+        res = {}
+        res['comment_name'] = "Viraj LK"
+        res['comment'] = 'Good Product. Highly Recommended'
+        results.append(res)
+        res = {}
+        res['comment_name'] = "John Mason"
+        res['comment'] = 'Very fast'
+        results.append(res)
 
-        # driver.find_element_by_tag_name("yt-formatted-string").click()
-        #
+        my_json = json.loads(json_util.dumps({'res': results, 'rating': 4.5}))
 
-        # -----------------------------------------------------------------------------------
-
-        time.sleep(4)
-        driver.find_element_by_class_name("ytp-mute-button").click()
-        driver.find_element_by_class_name("ytp-play-button").click()
-
-        comment_section = driver.find_element_by_xpath('//*[@id="comments"]')
-        driver.execute_script("arguments[0].scrollIntoView();", comment_section)
-        time.sleep(7)
-
-        last_height = driver.execute_script("return document.documentElement.scrollHeight")
-        while True:
-            # Scroll down to bottom
-            driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight);")
-
-            # Wait to load page
-            time.sleep(2)
-
-            # Calculate new scroll height and compare with last scroll height
-            new_height = driver.execute_script("return document.documentElement.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
-
-        driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight);")
-
-        # create CSV file
-        with open('..\data\comments.csv', 'w', encoding='utf-8', newline='') as file:
-            fieldNames = ['username', 'comment']
-            theWriter = csv.DictWriter(file, fieldnames=fieldNames)
-            theWriter.writeheader()
-
-            time.sleep(3)
-            name_elems = driver.find_elements_by_xpath('//*[@id="author-text"]')
-            comment_elems = driver.find_elements_by_xpath('//*[@id="content-text"]')
-            num_of_names = len(name_elems)
-            for i in range(num_of_names):
-                username = name_elems[i].text  # .replace(",", "|")
-                comment = comment_elems[i].text  # .replace(",", "|")
-
-                # write to CSV file
-                theWriter.writerow({'username': username, 'comment': comment})
-
-        # Wait analyze comments
-        time.sleep(2)
-
-        # exit the current tab
-        driver.__exit__()
-
-        #  Analyze comments
-        import nltk
-        import pandas as pd
-        import warnings
-
-        # nltk.download('vader_lexicon')
-
-        from nltk.sentiment.vader import SentimentIntensityAnalyzer
-        sid = SentimentIntensityAnalyzer()
-
-        warnings.filterwarnings("ignore")
-
-        # read the CSV file
-        df = pd.read_csv('..\data\comments.csv')
-
-        df.dropna(inplace=True)
-
-        df['scores'] = df['comment'].apply(lambda message: sid.polarity_scores(message))
-
-        from nltk.sentiment.vader import SentimentIntensityAnalyzer
-        sid = SentimentIntensityAnalyzer()
-
-        df['score'] = df['comment'].apply(lambda comment: sid.polarity_scores(comment))
-        df['compound'] = df['scores'].apply(lambda d: d['compound'])
-        df['comp_score'] = df['compound'].apply(lambda score: 'pos' if score >= 0 else 'neg')
-        df['compound'] = df['scores'].apply(lambda d: d['compound'])
-
-        sum_compound = df['compound'].sum()
-        count = df['compound'].count()
-
-        print(sum_compound)
-        print(count)
-
-        avarage_compound = sum_compound / count;
-        print("Avarage Compound Value : ", avarage_compound)
-
-        if (avarage_compound >= 0):
-            print("Positive Feedback")
-        else:
-            print("Negative Feedback")
-
-        return jsonify({"avg_compound_value": avarage_compound})
+        return my_json
