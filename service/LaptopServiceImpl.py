@@ -1,4 +1,4 @@
-from pyknow import *
+from pyknow  import *
 import logging as logger
 from flask_pymongo import PyMongo
 
