@@ -1,3 +1,4 @@
+apiclient
 pymongo==3.8.0
 Keras==2.2.4
 numpy==1.16.4
@@ -11,3 +12,4 @@ flask-Cors==3.0.8
 pandas==0.25.1
 scikit-learn==0.21.3
 nltk==3.4.5
+oauth2client==4.1.3
