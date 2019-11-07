@@ -20,13 +20,13 @@ class CommentsController(Resource):
         chrome_path = os.path.join(my_path, "..\chromeDriver\chromedriver.exe")
 
         # without headless mode
-        driver = webdriver.Chrome(chrome_path)
+        # driver = webdriver.Chrome(chrome_path)
 
         # run hedless mode
-        # chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument("--headless")
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
 
-        # driver = webdriver.Chrome(chrome_path, options=chrome_options)
+        driver = webdriver.Chrome(chrome_path, options=chrome_options)
 
         # # hide browser
         # driver.set_window_position(-10000,0)
@@ -48,6 +48,7 @@ class CommentsController(Resource):
         # #  click filters
         # driver.find_element_by_xpath("""//*[@id="container"]/ytd-toggle-button-renderer""").click()
 
+        # get first video
         driver.find_element_by_xpath("""//*[@id="thumbnail"]/yt-img-shadow""").click()
 
         # driver.find_element_by_tag_name("yt-formatted-string").click()
@@ -80,7 +81,7 @@ class CommentsController(Resource):
         driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight);")
 
         # create CSV file
-        with open('..\data\comments.csv', 'w', encoding='utf-8', newline='') as file:
+        with open('C:/Users/Sachith/PycharmProjects/tech-ring-py-api/data/comments.csv', 'w', encoding='utf-8', newline='') as file:
             fieldNames = ['username', 'comment']
             theWriter = csv.DictWriter(file, fieldnames=fieldNames)
             theWriter.writeheader()
@@ -115,7 +116,7 @@ class CommentsController(Resource):
         warnings.filterwarnings("ignore")
 
         # read the CSV file
-        df = pd.read_csv('..\data\comments.csv')
+        df = pd.read_csv('C:/Users/Sachith/PycharmProjects/tech-ring-py-api/data/comments.csv')
 
         df.dropna(inplace=True)
 
