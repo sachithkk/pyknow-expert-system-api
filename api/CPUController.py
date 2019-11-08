@@ -4,6 +4,9 @@ import logging as logger
 from flask import jsonify, request
 import re, sys , pymongo, time, requests, os.path
 
+from service.CPUServiceImpl import CPUService
+from service.CPUServiceImpl import CPU
+
 
 class CPUController(Resource):
 
@@ -17,6 +20,20 @@ class CPUController(Resource):
         # default values
         cpu_model = "core i3"
         cpu_genaration = "generation 1"
+        cpu_speed = 2
+
+        # get 1st cpu if it has more than 1
+        if(" or " in cpu):
+            data = cpu.split(" or ")
+            cpu = data[0]
+
+        if (" / " in cpu):
+            data = cpu.split(" / ")
+            cpu = data[0]
+
+        if (", " in cpu):
+            data = cpu.split(", ")
+            cpu = data[0]
 
         # get cpu model
         if("core i3" in cpu):
@@ -59,7 +76,35 @@ class CPUController(Resource):
         if (re.findall(r"9[0-9][0-9][0-9]", cpu)):
             cpu_genaration = "generation 9"
 
+        # get speed
+        if (re.findall(r"1 ghz", cpu) or re.findall(r"1\.[0-9] ghz", cpu) or re.findall(r"1\.[0-9][0-9] ghz", cpu) or re.findall(r"1ghz", cpu) or re.findall(r"1\.[0-9]ghz", cpu) or re.findall(r"1\.[0-9][0-9]ghz", cpu)):
+            cpu_speed = 1
 
-        return jsonify({"msg":"cpu point calculation", "cpu": cpu, "cpu_model": cpu_model, "cpu_genaration": cpu_genaration })
+        if (re.findall(r"2 ghz", cpu) or re.findall(r"2\.[0-9] ghz", cpu) or re.findall(r"2\.[0-9][0-9] ghz", cpu) or re.findall(r"2ghz", cpu) or re.findall(r"2\.[0-9]ghz", cpu) or re.findall(r"2\.[0-9][0-9]ghz", cpu)):
+            cpu_speed = 2
+
+        if (re.findall (r"3 ghz", cpu) or re.findall (r"3\.[0-9] ghz", cpu) or re.findall (r"3\.[0-9][0-9] ghz", cpu) or re.findall (r"3ghz", cpu) or re.findall (r"3\.[0-9]ghz", cpu) or re.findall (r"3\.[0-9][0-9]ghz", cpu)):
+            cpu_speed = 3
+
+        if (re.findall (r"4 ghz", cpu) or re.findall (r"4\.[0-9] ghz", cpu) or re.findall (r"4\.[0-9][0-9] ghz", cpu) or re.findall (r"4ghz", cpu) or re.findall (r"4\.[0-9]ghz", cpu) or re.findall (r"4\.[0-9][0-9]ghz", cpu)):
+            cpu_speed = 4
+
+        if (re.findall(r"5 ghz", cpu) or re.findall(r"5\.[0-9] ghz", cpu) or re.findall(r"5\.[0-9][0-9] ghz", cpu) or re.findall(r"5ghz", cpu) or re.findall(r"5\.[0-9]ghz", cpu) or re.findall(r"5\.[0-9][0-9]ghz", cpu)):
+            cpu_speed = 5
+
+        cpuService = CPUService()
+        cpuService.reset()
+
+        cpuService.declare(CPU(cpu_model = cpu_model,
+                               cpu_genaration = cpu_genaration,
+                               cpu_speed = cpu_speed ))
+
+
+        cpuService.run()
+        r = cpuService.result();
+
+        print(r)
+
+        return jsonify({"cpu points": r })
 
 
