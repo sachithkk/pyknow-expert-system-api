@@ -40,7 +40,8 @@ class GameController(Resource):
         #                       Need For Speed | gta v | Tomb Raider | anno | assassins creed origins | Assassins Creed® Odyssey | HITMAN
         #                       Dota 2 |
 
-        #  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3 | Watch_Dogs |  Rise of the Tomb Raider |
+        #  games  age check: Call of Duty 7: Black Ops | Call of Duty®: Modern Warfare® 3 | Call of Duty®: Infinite Warfare | Watch_Dogs
+        #                   |  Rise of the Tomb Raider |
         search_tag = requestData["game"]
 
         # search the game
