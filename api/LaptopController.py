@@ -33,8 +33,8 @@ class LaptopController(Resource):
         gpuMemorySize = requestData['gpuMemorySize']
         gpuBooStSpeed = requestData['gpuBooStSpeed']
 
-        print("****" + requestData['ramType'])
-        print("****" + requestData['ramSize'])
+        logger.info(requestData['ramType'])
+        logger.info(requestData['ramSize'])
 
         laptopservice = LaptopService()
 
@@ -50,8 +50,8 @@ class LaptopController(Resource):
                                      batteryType=requestData['batteryType']))
 
         laptopservice.run()
-        r = laptopservice.result();
+        result = laptopservice.result();
 
-        print(r);
+        logger.info("Final answer "+result);
 
-        return jsonify({"point": r})
+        return jsonify({"point": result})

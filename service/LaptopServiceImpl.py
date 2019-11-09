@@ -20,7 +20,11 @@ class LaptopService(KnowledgeEngine):
     flaskAppInstance.config['MONGO_URI'] = 'mongodb://localhost:27017/techRingdb'
     mongo = PyMongo(flaskAppInstance);
 
+<<<<<<< HEAD
     #result = mongo.db.cpu_mode_point.find();
+=======
+    result = mongo.db.x.find();
+>>>>>>> 37078f29e8123cc490c49ae3988fd29f8787d756
 
     compational_power_point = 0
 
