@@ -6,6 +6,7 @@ from pymongo import MongoClient
 import json
 from bson import json_util, ObjectId
 
+
 class ChangeProductController(Resource):
 
     def post(self):
@@ -26,6 +27,7 @@ class ChangeProductController(Resource):
         ram = requestData["ram"]
         vga = requestData["vga"]
         hard_disk = requestData["hard_disk"]
+        type = requestData["type"]
 
         res = []
 
@@ -50,7 +52,12 @@ class ChangeProductController(Resource):
             hard_disk_pro = col_hard_disk.find_one({"_id": ObjectId(hard_disk)})
 
         if want_product == "motherboard":
-            for col in col_motherboard.find():
+            sorted_motherboard = ''
+            if type == "quality":
+                sorted_motherboard = col_motherboard.find().sort("ratings", -1)
+            else:
+                sorted_motherboard = col_motherboard.find().sort("price")
+            for col in sorted_motherboard:
                 if motherboard_pro["_id"] != col["_id"]:
                     if col["price"]:
                         if float(price_max) >= float(col["price"]) >= float(price_min):
@@ -62,37 +69,63 @@ class ChangeProductController(Resource):
                                             break
 
         elif want_product == "cpu":
-            for col in col_cpu.find():
+            sorted_cpu = ''
+            if type == "quality":
+                sorted_cpu = col_cpu.find().sort("ratings", -1)
+            else:
+                sorted_cpu = col_cpu.find().sort("price")
+            for col in sorted_cpu:
                 if cpu_pro["_id"] != col["_id"]:
                     if col["price"]:
                         if float(price_max) >= float(col["price"]) >= float(price_min):
                             if col["socket"] and motherboard_pro["socket"]:
-                                if (col["socket"].lower() in motherboard_pro["socket"].lower()) or (motherboard_pro["cpu_brand"].lower() in col["socket"].lower()):
+                                if (col["socket"].lower() in motherboard_pro["socket"].lower()) or (
+                                        motherboard_pro["cpu_brand"].lower() in col["socket"].lower()):
                                     res.append(col)
                                     break
 
         elif want_product == "ram":
-            for col in col_ram.find():
+            sorted_ram = ''
+            if type == "quality":
+                sorted_ram = col_ram.find().sort("ratings", -1)
+            else:
+                sorted_ram = col_ram.find().sort("price")
+            for col in sorted_ram:
                 if ram_pro["_id"] != col["_id"]:
                     if col["price"]:
                         if float(price_max) >= float(col["price"]) >= float(price_min):
                             if col["type"] and motherboard_pro["memory_type"]:
-                                if (col["type"].lower() in motherboard_pro["memory_type"].lower()) or (motherboard_pro["memory_type"].lower() in col["type"].lower()):
+                                if (col["type"].lower() in motherboard_pro["memory_type"].lower()) or (
+                                        motherboard_pro["memory_type"].lower() in col["type"].lower()):
                                     res.append(col)
                                     break
 
         elif want_product == "vga":
-            for col in col_vga.find():
+            sorted_vga = ''
+            if type == "quality":
+                sorted_vga = col_vga.find().sort("ratings", -1)
+            else:
+                sorted_vga = col_vga.find().sort("price")
+            for col in sorted_vga:
                 if vga_pro["_id"] != col["_id"]:
                     if col["price"]:
                         if float(price_max) >= float(col["price"]) >= float(price_min):
-                            if col["pci_slot"] and vga_pro["slot"]:
-                                if (col["pci_slot"].lower() in vga_pro["slot"].lower()) or (vga_pro["slot"].lower() in col["pci_slot"].lower()):
-                                    res.append(col)
-                                    break
+                            if vga_pro["slot"]:
+                                if col["slot"]:
+                                    if (col["slot"].lower() in vga_pro["slot"].lower()) or (
+                                            vga_pro["slot"].lower() in col["slot"].lower()):
+                                        res.append(col)
+                                        break
+                            else:
+                                res.append(col)
 
         elif want_product == "hard_disk":
-            for col in col_hard_disk.find():
+            sorted_hard_disk = ''
+            if type == "quality":
+                sorted_hard_disk = col_hard_disk.find().sort("ratings", -1)
+            else:
+                sorted_hard_disk = col_hard_disk.find().sort("price")
+            for col in sorted_hard_disk:
                 if hard_disk_pro["_id"] != col["_id"]:
                     if col["price"]:
                         if float(price_max) >= float(col["price"]) >= float(price_min):
@@ -100,7 +133,5 @@ class ChangeProductController(Resource):
                             break
 
         my_json = json.loads(json_util.dumps({'res': res}))
-
+        print(my_json);
         return my_json
-
-

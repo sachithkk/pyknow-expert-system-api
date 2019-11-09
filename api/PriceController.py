@@ -29,6 +29,8 @@ class PriceController(Resource):
         hard_disk_min = requestData["hard_disk_min"]
         hard_disk_max = requestData["hard_disk_max"]
 
+        type = requestData["type"]
+
         ram_arr = []
         vga_arr = []
         cpu_arr = []
@@ -98,32 +100,56 @@ class PriceController(Resource):
                                             break
 
         motherboard = db.Motherboard
-        for record in motherboard.find().sort("points", -1):
+        sorted_motherboard = ''
+        if type == "quality":
+            sorted_motherboard = motherboard.find().sort("ratings", -1)
+        else:
+            sorted_motherboard = motherboard.find().sort("price")
+        for record in sorted_motherboard:
             if record['price']:
-                if float(motherboard_min) <= float(record['price']) and float(motherboard_max) >= float(
-                        record["price"]):
+                if float(motherboard_min) <= float(record['price']) and float(motherboard_max) >= float(record["price"]):
                     motherboard_arr.append(record)
 
         cpu = db.CPU
-        for record in cpu.find().sort("points", -1):
+        sorted_cpu = ''
+        if type == "quality":
+            sorted_cpu = cpu.find().sort("points", -1)
+        else:
+            sorted_cpu = cpu.find().sort("price")
+        for record in sorted_cpu:
             if record['price']:
                 if float(cpu_min) <= float(record['price']) and float(cpu_max) >= float(record["price"]):
                     cpu_arr.append(record)
 
         ram = db.RAM
-        for record in ram.find().sort("points", -1):
+        sorted_ram = ''
+        if type == "quality":
+            sorted_ram = ram.find().sort("ratings", -1)
+        else:
+            sorted_ram = ram.find().sort("price")
+        for record in sorted_ram:
             if record['price']:
                 if float(ram_min) <= float(record['price']) and float(ram_max) >= float(record["price"]):
                     ram_arr.append(record)
 
         vga = db.VGA
-        for record in vga.find().sort("points", -1):
+        sorted_vga = ''
+        if type == "quality":
+            sorted_vga = vga.find().sort("ratings", -1)
+        else:
+            sorted_vga = vga.find().sort("price")
+        for record in sorted_vga:
             if record['price']:
                 if float(vga_min) <= float(record['price']) and float(vga_max) >= float(record["price"]):
                     vga_arr.append(record)
 
         hard_disk = db.Hard_Disk
-        for record in hard_disk.find().sort("points", -1):
+        sorted_hard_disk = ''
+        if type == "quality":
+            sorted_hard_disk = hard_disk.find().sort("ratings", -1)
+        else:
+            sorted_hard_disk = hard_disk.find().sort("price")
+        for record in sorted_hard_disk:
             if record['price']:
                 if float(hard_disk_min) <= float(record['price']) <= float(hard_disk_max):
                     hard_disk_arr.append(record)
