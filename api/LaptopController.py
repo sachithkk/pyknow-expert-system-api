@@ -52,6 +52,6 @@ class LaptopController(Resource):
         laptopservice.run()
         result = laptopservice.result();
 
-        logger.info("Final answer "+result);
+        logger.info("Final answer ");
 
         return jsonify({"point": result})
