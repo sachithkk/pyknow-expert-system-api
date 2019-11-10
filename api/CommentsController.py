@@ -25,7 +25,7 @@ class CommentsController(Resource):
             rec = 0
             perc_ = 0
             try:
-                req = youtube.search().list(q=q, part='snippet', type='video', maxResults=10)
+                req = youtube.search().list(q=q_split[0], part='snippet', type='video', maxResults=10)
                 res = req.execute()
 
                 for item in res['items']:
