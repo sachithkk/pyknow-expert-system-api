@@ -18,14 +18,14 @@ class CommentsController(Resource):
 
         def extract_youtube():
             api_key = 'AIzaSyB4klg5itSHIb8Q7JL3CXGJ665b-aTh1o4'
-            youtube = build('youtube', 'v3', developerKey=api_key)
+            youtube = build('youtube', 'v3', developerKey=api_key, cache_discovery=False)
             q = requestData["name"]
             q_split = q.split()
             res = True
             rec = 0
             perc_ = 0
             try:
-                req = youtube.search().list(q=q, part='snippet', type='video', maxResults=10)
+                req = youtube.search().list(q=q_split[0], part='snippet', type='video', maxResults=10)
                 res = req.execute()
 
                 for item in res['items']:
