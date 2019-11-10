@@ -14,26 +14,26 @@ class LaptopService(KnowledgeEngine):
     #     self.a = a
     #     print("This is model name : "+ self.a)
 
-    laptop_model_point = {};
+    laptop_model_point = {}
 
+    #
+    # connect with mongo database
+    #
     flaskAppInstance.config['MONGO_DBNAME'] = 'techRingdb'
     flaskAppInstance.config['MONGO_URI'] = 'mongodb://localhost:27017/techRingdb'
-    mongo = PyMongo(flaskAppInstance);
+    mongo = PyMongo(flaskAppInstance)
 
-    result = mongo.db.cpu_mode_point.find();
+    result = mongo.db.cpu_mode_point.find()
 
+    # variable point
     compational_power_point = 0
 
     @DefFacts()
     def __const__(self):
         logger.info("Called Defacts method.")
-        # time.sleep(10)
-        # self.connect_open()
         yield Fact(laptop_init=True)
 
-    #
-    # connect with mongo database
-    #
+
 
     #
     # CPU type point calculation.
