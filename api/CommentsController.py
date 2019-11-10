@@ -20,13 +20,13 @@ class CommentsController(Resource):
         chrome_path = os.path.join(my_path, "..\chromeDriver\chromedriver.exe")
 
         # without headless mode
-        driver = webdriver.Chrome(chrome_path)
+        # driver = webdriver.Chrome(chrome_path)
 
         # run hedless mode
-        # chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument("--headless")
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
 
-        # driver = webdriver.Chrome(chrome_path, options=chrome_options)
+        driver = webdriver.Chrome(chrome_path, options=chrome_options)
 
         # # hide browser
         # driver.set_window_position(-10000,0)
