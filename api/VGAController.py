@@ -18,7 +18,7 @@ class VGAController(Resource):
         vga = vga.lower()
 
         # default values
-        vga_speed = 1
+        vga_memory = 1
         vga_model = "ddr 3"
 
 

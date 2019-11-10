@@ -1,7 +1,7 @@
 from flask_restful import Resource
 import logging as logger
 from flask import request
-import requests
+import requests,json
 
 class DataController(Resource):
 
@@ -16,13 +16,24 @@ class DataController(Resource):
             print("//////////////////////////////////////////////////")
             print(r.text)
 
-            parts = [ { "model":"John", "age":30, "city":"New York"},
-                     { "name":"John", "age":30, "city":"New York"},
-                     { "name":"John", "age":30, "city":"New York"},
-                     { "name":"John", "age":30, "city":"New York"},
-                     { "name":"John", "age":30, "city":"New York"},
-                     { "name":"John", "age":30, "city":"New York"}
-                     ]
+            # parts = [ { "name":"John", "age":30, "city":"New York"},
+            #          { "name":"John1", "age":30, "city":"New York"},
+            #          { "name":"John2", "age":30, "city":"New York"},
+            #          { "name":"John", "age":33, "city":"  York"},
+            #          { "name":"John", "age":11, "city":"New  "},
+            #          { "name":"John", "age":30, "city":"New York"}
+            #          ]
+            # parts1 = json.dumps(parts)
+            # print(parts1)
+            #
+            # print(type(parts1))
+            #
+            # for attrs  in parts1:
+            #         print(attrs ['name'])
+            #         break
+            # else:
+            #     print('Nothing found!')
+
 
         if ("ram" in data ):
             parts = "ram"

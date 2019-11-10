@@ -18,24 +18,24 @@ class RAMController(Resource):
         ram = ram.lower()
 
         # default values
-        ram_speed = "1 gb"
+        ram_memory = 1
         ram_model = "ddr 3"
 
         # get ram speed
         if ("1 gb" in ram):
-            ram_speed = "1 gb"
+            ram_memory = 1
 
         if ("2 gb" in ram):
-            ram_speed = "2 gb"
+            ram_memory = 2
 
         if ("3 gb" in ram or "4 gb" in ram):
-            ram_speed = "3 gb"
+            ram_memory = 4
 
         if ("5 gb" in ram or "6 gb" in ram or "7 gb" in ram or "8 gb" in ram):
-            ram_speed = "8 gb"
+            ram_memory = 8
 
         if ("9 gb" in ram or "10 gb" in ram or "11 gb" in ram or "12 gb" in ram or "13 gb" in ram or "14 gb" in ram or "15 gb" in ram or "16 gb" in ram):
-            ram_speed = "16 gb"
+            ram_memory = 16
 
         # get ram model
         if ("ddr 3" in ram or "ddr3" in ram or "ddr-3" in ram):
@@ -47,7 +47,7 @@ class RAMController(Resource):
         ramService = RAMService()
         ramService.reset()
 
-        ramService.declare(RAM(ram_speed = ram_speed,
+        ramService.declare(RAM(ram_memory = ram_memory,
                                ram_model = ram_model))
 
 
@@ -56,6 +56,6 @@ class RAMController(Resource):
 
         print(r)
 
-        return jsonify({"ram_speed": ram_speed, "ram_model":ram_model , "r" : r})
+        return jsonify({"ram_points": r})
 
 
