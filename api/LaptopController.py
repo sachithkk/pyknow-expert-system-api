@@ -20,21 +20,21 @@ class LaptopController(Resource):
         logger.info("Starting laptop compaire method....")
         requestData = request.get_json()
 
-        logger.info(requestData['cpuModel'])
-        logger.info(requestData['cpuCoresSize'])
-        logger.info(requestData['cpuCachSize'])
-        logger.info(requestData['cpuBoostSpeed'])
+        cpuModel = requestData['cpuModel']
+        cpuCoresSize = requestData['cpuCoresSize']
+        cpuCachSize = requestData['cpuCachSize']
+        cpuBoostSpeed = requestData['cpuBoostSpeed']
+        ramType = requestData['ramType']
+        ramSize = requestData['ramSize']
+        storageType = requestData['storageType']
+        storageSize = requestData['storageSize']
+        batteryType = requestData['batteryType']
+        batteryCapacity = requestData['batteryCapacity']
+        gpuMemorySize = requestData['gpuMemorySize']
+        gpuBooStSpeed = requestData['gpuBooStSpeed']
+
         logger.info(requestData['ramType'])
         logger.info(requestData['ramSize'])
-        logger.info(requestData['storageType'])
-        logger.info(requestData['storageSize'])
-        logger.info(requestData['batteryType'])
-        logger.info(requestData['batteryCapacity'])
-        logger.info(requestData['gpuMemorySize'])
-        logger.info(requestData['gpuBooStSpeed'])
-
-        logger.info("****")
-        logger.info("****")
 
         laptopservice = LaptopService()
 
@@ -52,6 +52,6 @@ class LaptopController(Resource):
         laptopservice.run()
         result = laptopservice.result();
 
-        print(result);
+        logger.info("Final answer "+result);
 
         return jsonify({"point": result})

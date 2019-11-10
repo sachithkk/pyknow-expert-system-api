@@ -9,6 +9,9 @@ from .CPUController import CPUController
 from .RAMController import RAMController
 from .VGAController import VGAController
 from .DataController import DataController
+from .ChangeProductController import ChangeProductController
+from .PriceController import PriceController
+# from .Youtube_videos import youtube_search
 
 restServer = Api(flaskAppInstance)
 
@@ -19,4 +22,5 @@ restServer.add_resource(CPUController, "/api-py-techRing/cpu_points")
 restServer.add_resource(RAMController, "/api-py-techRing/ram_points")
 restServer.add_resource(VGAController, "/api-py-techRing/vga_points")
 restServer.add_resource(DataController, "/api-py-techRing/pc_part")
-
+restServer.add_resource(ChangeProductController, "/api-py-techRing/change_product")
+restServer.add_resource(PriceController, "/api-py-techRing/build_for_price")
