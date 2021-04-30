@@ -6,7 +6,7 @@ Keras==2.2.4
 numpy==1.16.4
 requests==2.22.0
 selenium==3.141.0
-urllib3==1.25.3
+urllib3==1.25.8
 Flask==1.1.1
 Flask-RESTful==0.3.7
 Flask-PyMongo==2.3.0
